@@ -1,5 +1,5 @@
 import os
-from abc import ABC, abstractmethod
+from abc import ABC
 
 import torch
 from matplotlib import pyplot as plt
