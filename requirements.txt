@@ -1,0 +1,9 @@
+torch
+torchvision
+torchinfo
+tqdm
+matplotlib
+albumentations
+numpy
+opencv-python
+grad-cam
