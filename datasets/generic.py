@@ -63,9 +63,11 @@ class MyDataSet(ABC):
                 t.mul_(s).add_(m)
         return result
 
-    @abstractmethod
     def show_transform(self, img):
-        pass
+        if len(self.mean) == 3:
+            return img.permute(1, 2, 0)
+        else:
+            return img.squeeze(0)
 
     def show_examples(self, figsize=None, denorm=True):
         batch_data, batch_label = next(self.example_iter)

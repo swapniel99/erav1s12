@@ -25,6 +25,3 @@ class MNIST(MyDataSet):
         A.Rotate(limit=7, p=1.),
         A.Perspective(scale=0.2, p=0.5, fit_output=False)
     ]
-
-    def show_transform(self, img):
-        return img.squeeze(0)

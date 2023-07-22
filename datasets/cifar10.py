@@ -31,6 +31,3 @@ class CIFAR10(MyDataSet):
         A.CoarseDropout(max_holes=1, max_height=16, max_width=16, fill_value=0, p=0.6),
         A.CenterCrop(32, 32, p=1)
     ]
-
-    def show_transform(self, img):
-        return img.permute(1, 2, 0)
