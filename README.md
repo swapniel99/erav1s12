@@ -1,2 +1,2 @@
-# mytorch
+# epoch
 Modular Framework around Pytorch
