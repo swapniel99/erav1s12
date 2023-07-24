@@ -7,11 +7,16 @@ from .backprop import Train, Test
 
 
 class Experiment(object):
-    def __init__(self, model, dataset, criterion=None, epochs=20, lr=0.01, scheduler='one_cycle'):
+    criterions = {
+        'nll': nn.NLLLoss,
+        'crossentropy': nn.CrossEntropyLoss
+    }
+
+    def __init__(self, model, dataset, criterion='crossentropy', epochs=20, lr=0.01, scheduler='one_cycle'):
         self.device = get_device()
         self.model = model.to(self.device)
         self.dataset = dataset
-        self.criterion = criterion or nn.CrossEntropyLoss()
+        self.criterion = self.criterions.get(criterion, nn.CrossEntropyLoss)
         self.epochs = epochs
         self.optimizer = optim.SGD(model.parameters(), momentum=0.9, lr=lr)
         if scheduler == 'one_cycle':
