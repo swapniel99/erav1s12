@@ -9,11 +9,10 @@ cifar10 = CIFAR10(batch_size)
 
 model = ResNet18()
 
-experiment = Experiment(model, cifar10, criterion='crossentropy', epochs=20, scheduler='one_cycle')
-
 
 if __name__ == '__main__':
     model_summary(model, input_size=(batch_size, 3, 32, 32))
+    experiment = Experiment(model, cifar10, criterion='crossentropy', epochs=20, scheduler='one_cycle')
     experiment.execute()
     experiment.train.plot_stats()
     experiment.test.plot_stats()
