@@ -4,7 +4,7 @@ from matplotlib import pyplot as plt
 
 from utils import get_device
 
-torch.autograd.set_detect_anomaly(True)
+# torch.autograd.set_detect_anomaly(True)
 
 
 def get_correct_count(prediction, labels):
