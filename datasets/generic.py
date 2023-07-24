@@ -2,9 +2,9 @@ import os
 from abc import ABC
 
 import torch
-from matplotlib import pyplot as plt
 import albumentations as A
 from albumentations.pytorch import ToTensorV2
+from utils import plot_examples
 
 
 class MyDataSet(ABC):
@@ -71,18 +71,20 @@ class MyDataSet(ABC):
 
     def show_examples(self, figsize=None, denorm=True):
         batch_data, batch_label = next(self.example_iter)
+        images = list()
+        labels = list()
 
-        _ = plt.figure(figsize=figsize)
-        for i in range(12):
-            plt.subplot(3, 4, i + 1)
-            plt.tight_layout()
+        for i in range(len(batch_data)):
             image = batch_data[i]
             if denorm:
                 image = self.denormalise(image)
-            plt.imshow(self.show_transform(image), cmap='gray')
+            image = self.show_transform(image)
+
             label = batch_label[i].item()
             if self.classes is not None:
                 label = f'{label}:{self.classes[label]}'
-            plt.title(str(label))
-            plt.xticks([])
-            plt.yticks([])
+
+            images.append(image)
+            labels.append(label)
+
+        plot_examples(images, labels, figsize=figsize)
