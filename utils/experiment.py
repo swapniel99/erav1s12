@@ -36,9 +36,9 @@ class Experiment(object):
         else:
             self.scheduler = optim.lr_scheduler.ReduceLROnPlateau(self.optimizer, patience=1, verbose=True, factor=0.1)
             perform_step = False
-        self.train = Train(self.model, dataset, criterion, self.optimizer, scheduler=self.scheduler,
+        self.train = Train(self.model, dataset, self.criterion, self.optimizer, scheduler=self.scheduler,
                            perform_step=perform_step)
-        self.test = Test(self.model, dataset, criterion)
+        self.test = Test(self.model, dataset, self.criterion)
         self.incorrect_preds = None
 
     def find_lr(self):
