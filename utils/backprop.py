@@ -62,7 +62,7 @@ class Train(object):
 
             pbar.set_description(
                 desc=f"Train: Average Loss: {train_loss / processed:0.4f}, Accuracy: {100 * correct / processed:0.2f}"
-                     + f" LR: {self.scheduler.get_last_lr()[0]}" if self.perform_step else ""
+                     + (f" LR: {self.scheduler.get_last_lr()[0]}" if self.perform_step else "")
             )
             if self.perform_step:
                 self.scheduler.step()
