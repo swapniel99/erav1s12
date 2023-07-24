@@ -43,7 +43,7 @@ class Experiment(object):
 
     def find_lr(self):
         lr_finder = LRFinder(self.model, self.optimizer, self.criterion, device=self.device)
-        lr_finder.range_test(self.dataset.train_loader, start_lr=1e-6, end_lr=1, num_iter=200, step_mode='exp')
+        lr_finder.range_test(self.dataset.train_loader, start_lr=1e-5, end_lr=0.1, num_iter=100, step_mode='exp')
         _, best_lr = lr_finder.plot()  # to inspect the loss-learning rate graph
         lr_finder.reset()  # to reset the model and optimizer to their initial state
         return best_lr
