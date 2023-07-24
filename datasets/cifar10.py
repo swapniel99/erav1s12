@@ -29,6 +29,6 @@ class CIFAR10(MyDataSet):
         # Padding value doesnt matter here.
         A.PadIfNeeded(64, 64, border_mode=cv2.BORDER_CONSTANT, value=0, p=1),
         # Since normalisation was the first step, mean is already 0, so cutout fill_value = 0
-        A.CoarseDropout(max_holes=1, max_height=16, max_width=16, fill_value=0, p=0.5),
+        A.CoarseDropout(max_holes=1, max_height=16, max_width=16, fill_value=0, p=1),
         A.CenterCrop(32, 32, p=1)
     ]
