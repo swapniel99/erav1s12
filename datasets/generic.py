@@ -69,7 +69,7 @@ class MyDataSet(ABC):
         else:
             return img.squeeze(0)
 
-    def show_examples(self, figsize=None, denorm=True):
+    def show_examples(self, figsize=(8, 6), denorm=True):
         batch_data, batch_label = next(self.example_iter)
         images = list()
         labels = list()
