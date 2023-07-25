@@ -4,7 +4,11 @@ from abc import ABC
 import torch
 import albumentations as A
 from albumentations.pytorch import ToTensorV2
-from epoch.utils import plot_examples
+
+try:
+    from epoch.utils import plot_examples
+except ModuleNotFoundError:
+    from utils import plot_examples
 
 
 class MyDataSet(ABC):
