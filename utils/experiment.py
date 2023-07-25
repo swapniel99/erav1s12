@@ -107,4 +107,4 @@ class Experiment(object):
             images.append(image.cpu())
             labels.append(label)
 
-        plot_examples(images, labels, figsize=(8, 6))
+        plot_examples(images, labels, figsize=(10, 8))
