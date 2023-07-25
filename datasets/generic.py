@@ -64,20 +64,20 @@ class MyDataSet(ABC):
         return result
 
     def show_transform(self, img):
+        if self.normalize:
+            img = self.denormalise(img)
         if len(self.mean) == 3:
             return img.permute(1, 2, 0)
         else:
             return img.squeeze(0)
 
-    def show_examples(self, figsize=(8, 6), denorm=True):
+    def show_examples(self, figsize=(8, 6)):
         batch_data, batch_label = next(self.example_iter)
         images = list()
         labels = list()
 
         for i in range(len(batch_data)):
             image = batch_data[i]
-            if denorm:
-                image = self.denormalise(image)
             image = self.show_transform(image)
 
             label = batch_label[i].item()

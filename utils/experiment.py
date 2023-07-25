@@ -1,6 +1,9 @@
 from collections import defaultdict
 from torch import nn, optim
 from torch_lr_finder import LRFinder
+from pytorch_grad_cam import GradCAM
+from pytorch_grad_cam.utils.image import show_cam_on_image
+from pytorch_grad_cam.utils.model_targets import ClassifierOutputTarget
 
 from utils import get_device, plot_examples
 from .backprop import Train, Test
@@ -40,6 +43,7 @@ class Experiment(object):
                            perform_step=perform_step)
         self.test = Test(self.model, dataset, self.criterion)
         self.incorrect_preds = None
+        self.grad_cam = None
 
     def find_lr(self):
         lr_finder = LRFinder(self.model, self.optimizer, self.criterion, device=self.device)
@@ -60,7 +64,7 @@ class Experiment(object):
                     print("Target Validation accuracy achieved thrice. Stopping Training.")
                     break
 
-    def show_incorrect(self, denorm=True):
+    def show_incorrect(self):
         self.incorrect_preds = defaultdict(list)
         self.test(self.incorrect_preds)
 
@@ -69,8 +73,6 @@ class Experiment(object):
 
         for i in range(len(self.incorrect_preds["images"])):
             image = self.incorrect_preds["images"][i].cpu()
-            if denorm:
-                image = self.dataset.denormalise(image)
             image = self.dataset.show_transform(image)
 
             pred = self.incorrect_preds["predicted_vals"][i]
@@ -83,4 +85,41 @@ class Experiment(object):
             images.append(image)
             labels.append(label)
 
-        plot_examples(images, labels, figsize=(10, 6))
+        plot_examples(images, labels, figsize=(8, 6))
+
+    def get_cam_visualisation(self, input_tensor, label):
+        if self.grad_cam is None:
+            self.grad_cam = GradCAM(model=self.model, target_layers=[self.model.layer4[-1]])
+
+        targets = [ClassifierOutputTarget(label)]
+
+        grayscale_cam = self.grad_cam(input_tensor=input_tensor.unsqueeze(0), targets=targets)
+        # In this example grayscale_cam has only one image in the batch:
+        grayscale_cam = grayscale_cam[0, :]
+
+        output = show_cam_on_image(self.dataset.show_transform(input_tensor[0]).cpu().numpy(), grayscale_cam,
+                                   use_rgb=True)
+        return output
+
+    def show_incorrect_cams(self):
+        self.incorrect_preds = defaultdict(list)
+        self.test(self.incorrect_preds)
+
+        images = list()
+        labels = list()
+
+        for i in range(len(self.incorrect_preds["images"])):
+            image = self.incorrect_preds["images"][i].cpu()
+            truth = self.incorrect_preds["ground_truths"][i]
+
+            image = self.get_cam_visualisation(image, truth)
+
+            if self.dataset.classes is not None:
+                pred = f'{pred}:{self.dataset.classes[pred]}'
+                truth = f'{truth}:{self.dataset.classes[truth]}'
+            label = f'{pred}/{truth}'
+
+            images.append(image)
+            labels.append(label)
+
+        plot_examples(images, labels, figsize=(10, 8))
