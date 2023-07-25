@@ -2,7 +2,7 @@ import torch
 from tqdm import tqdm
 from matplotlib import pyplot as plt
 
-from utils import get_device
+from .misc import get_device
 
 # torch.autograd.set_detect_anomaly(True)
 
