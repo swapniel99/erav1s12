@@ -4,7 +4,7 @@ from models.resnet import ResNet18
 from datasets import CIFAR10
 
 set_seed(42)
-batch_size = 64
+batch_size = 32
 cifar10 = CIFAR10(batch_size)
 
 model = ResNet18()
