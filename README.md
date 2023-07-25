@@ -46,9 +46,13 @@ They also accumulate statistics which can be plotted using a simple member funct
 This module contains the experiment class, which carries out training and testing.
 Apart from this it also does the following:
 1. Performs train-test iterations for a given number of epochs or a given validation target accuracy.
-2. Configure Optimiser and Scheduler
+2. Configure Optimizer and Scheduler
 3. Show Misclassified examples
 4. Create GradCAM visualisations of misclassified examples
 
 #### 3c. utils/misc.py Module
-This module contains miscellaneous functions like detecting device and setting random seed.
+This module contains following miscellaneous functions:
+1. Set random seed
+2. Check for GPU device
+3. Plot dataset images
+4. Get Model summary
