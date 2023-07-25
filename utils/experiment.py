@@ -95,7 +95,7 @@ class Experiment(object):
             truth = self.incorrect_preds["ground_truths"][i]
 
             if cams:
-                image = self.get_cam_visualisation(image, truth)
+                image = self.get_cam_visualisation(image, pred)
             else:
                 image = self.dataset.show_transform(image).cpu()
 
