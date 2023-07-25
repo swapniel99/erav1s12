@@ -16,12 +16,12 @@ cifar10 = CIFAR10(batch_size)
 model = ResNet18()
 
 
-def print_summary():
-    print(model_summary(model, input_size=(batch_size, 3, 32, 32)))
+def print_summary(model_):
+    print(model_summary(model_, input_size=(batch_size, 3, 32, 32)))
 
 
-def create_experiment(criterion, epochs, scheduler):
-    return Experiment(model, cifar10, criterion=criterion, epochs=epochs, scheduler=scheduler)
+def create_experiment(model_, dataset, criterion, epochs, scheduler):
+    return Experiment(model_, dataset, criterion=criterion, epochs=epochs, scheduler=scheduler)
 
 
 def main(criterion='crossentropy', epochs=20, scheduler='one_cycle'):
