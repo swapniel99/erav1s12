@@ -8,7 +8,6 @@ batch_size = 64
 cifar10 = CIFAR10(batch_size)
 
 model = ResNet18()
-experiment = None
 
 
 def print_summary():
@@ -16,13 +15,13 @@ def print_summary():
 
 
 def create_experiment():
-    global experiment
-    experiment = Experiment(model, cifar10, criterion='crossentropy', epochs=20, scheduler='one_cycle')
+    return Experiment(model, cifar10, criterion='crossentropy', epochs=20, scheduler='one_cycle')
 
 
 if __name__ == '__main__':
     print_summary()
     create_experiment()
+    experiment = create_experiment()
     experiment.execute()
     experiment.train.plot_stats()
     experiment.test.plot_stats()
