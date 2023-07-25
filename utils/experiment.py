@@ -97,14 +97,14 @@ class Experiment(object):
             if cams:
                 image = self.get_cam_visualisation(image, truth)
             else:
-                image = self.dataset.show_transform(image)
+                image = self.dataset.show_transform(image).cpu()
 
             if self.dataset.classes is not None:
                 pred = f'{pred}:{self.dataset.classes[pred]}'
                 truth = f'{truth}:{self.dataset.classes[truth]}'
             label = f'{pred}/{truth}'
 
-            images.append(image.cpu())
+            images.append(image)
             labels.append(label)
 
         plot_examples(images, labels, figsize=(10, 8))
