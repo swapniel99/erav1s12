@@ -71,7 +71,7 @@ class Experiment(object):
 
     def get_cam_visualisation(self, input_tensor, label):
         if self.grad_cam is None:
-            self.grad_cam = GradCAM(model=self.model, target_layers=[self.model.layer4[-1]],
+            self.grad_cam = GradCAM(model=self.model, target_layers=[self.model.layer3[-1]],
                                     use_cuda=(self.device == 'cuda'))
 
         targets = [ClassifierOutputTarget(label)]
