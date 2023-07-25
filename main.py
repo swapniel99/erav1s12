@@ -11,7 +11,7 @@ model = ResNet18()
 
 
 def print_summary():
-    model_summary(model, input_size=(batch_size, 3, 32, 32))
+    print(model_summary(model, input_size=(batch_size, 3, 32, 32)))
 
 
 def create_experiment():
@@ -19,7 +19,6 @@ def create_experiment():
 
 
 if __name__ == '__main__':
-    print_summary()
     create_experiment()
     experiment = create_experiment()
     experiment.execute()
