@@ -133,13 +133,13 @@ class Model(LightningModule):
 
     def find_lr(self, optimizer):
         lr_finder = LRFinder(self, optimizer, self.criterion)
-        lr_finder.range_test(self.dataset.train_loader, start_lr=1e-5, end_lr=0.1, num_iter=100, step_mode='exp')
+        lr_finder.range_test(self.dataset.train_loader, end_lr=0.1, num_iter=100, step_mode='exp')
         _, best_lr = lr_finder.plot()
         lr_finder.reset()
         return best_lr
 
     def configure_optimizers(self):
-        optimizer = optim.SGD(self.parameters(), momentum=0.9, lr=0.01)
+        optimizer = optim.Adam(self.model.parameters(), lr=1e-7, weight_decay=1e-2)
         best_lr = self.find_lr(optimizer)
         scheduler = optim.lr_scheduler.OneCycleLR(
             optimizer,
