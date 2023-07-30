@@ -53,6 +53,9 @@ class MyDataSet(ABC):
         self.DataSet('../data', train=False, download=True)
 
     def get_train_loader(self):
+        if self.train_loader is not None:
+            return self.train_loader
+
         train_data = self.DataSet('../data', train=True, download=True, alb_transform=self.train_transforms)
         if self.classes is None:
             self.classes = {i: c for i, c in enumerate(train_data.classes)}
@@ -60,6 +63,9 @@ class MyDataSet(ABC):
         return self.train_loader
 
     def get_test_loader(self):
+        if self.test_loader is not None:
+            return self.test_loader
+
         test_data = self.DataSet('../data', train=False, download=True, alb_transform=self.test_transforms)
         self.test_loader = torch.utils.data.DataLoader(test_data, shuffle=False, **self.loader_kwargs)
         return self.test_loader

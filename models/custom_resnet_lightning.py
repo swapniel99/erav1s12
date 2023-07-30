@@ -128,7 +128,7 @@ class Model(LightningModule):
         scheduler = optim.lr_scheduler.OneCycleLR(
             optimizer,
             max_lr=best_lr,
-            steps_per_epoch=len(self.dataset.train_loader),
+            steps_per_epoch=len(self.dataset.get_train_loader()),
             epochs=20,
             pct_start=0.25,
             div_factor=100,
