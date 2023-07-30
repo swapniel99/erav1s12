@@ -44,7 +44,7 @@ class Experiment(object):
                                    use_rgb=True)
         return output
 
-    def show_incorrect(self, cams=False):
+    def show_incorrect(self, cams=False, target_layer=None):
         self.get_incorrect_preds()
 
         images = list()
@@ -56,7 +56,7 @@ class Experiment(object):
             truth = self.incorrect_preds["ground_truths"][i]
 
             if cams:
-                image = self.get_cam_visualisation(image, pred)
+                image = self.get_cam_visualisation(image, pred, target_layer)
             else:
                 image = self.dataset.show_transform(image).cpu()
 
