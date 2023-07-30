@@ -17,7 +17,7 @@ def get_incorrect_preds(prediction, labels):
 
 
 class Experiment(object):
-    def __init__(self, model, max_epochs=24, precision=32):
+    def __init__(self, model, max_epochs=None, precision="32-true"):
         self.model = model
         self.dataset = model.dataset
         self.dataset.get_train_loader()
