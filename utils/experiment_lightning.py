@@ -13,6 +13,8 @@ class Experiment(object):
     def __init__(self, model, max_epochs=20, precision=32):
         self.model = model
         self.dataset = model.dataset
+        self.dataset.get_train_loader()
+        self.dataset.get_test_loader()
         self.incorrect_preds = None
         self.grad_cam = None
         self.trainer = Trainer(max_epochs=max_epochs, precision=precision)
