@@ -65,6 +65,7 @@ class MyDataSet(ABC):
         return self.test_loader
 
     def denormalise(self, tensor):
+        result = tensor.clone().detach()
         result = torch.tensor(tensor, requires_grad=False)
         if self.normalize:
             for t, m, s in zip(result, self.mean, self.std):
