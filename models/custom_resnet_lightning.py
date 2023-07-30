@@ -87,25 +87,25 @@ class Model(LightningModule):
 
     def training_step(self, batch, batch_idx):
         loss = self.common_step(batch, self.train_accuracy, self.train_loss)
-        self.log("train_step_loss", loss, prog_bar=True)
+        self.log("train_step_loss", self.train_loss, prog_bar=True)
         self.log("train_step_acc", self.train_accuracy, prog_bar=True)
         return loss
 
     def on_train_epoch_end(self):
-        self.log("train_loss", self.train_loss, logger=True)
-        self.log("train_acc", self.train_accuracy, logger=True)
+        # self.log("train_loss", self.train_loss, logger=True)
+        # self.log("train_acc", self.train_accuracy, logger=True)
         self.train_loss.reset()
         self.train_accuracy.reset()
 
     def validation_step(self, batch, batch_idx):
         loss = self.common_step(batch, self.val_accuracy, self.val_loss)
-        self.log("val_step_loss", loss, prog_bar=True)
+        self.log("val_step_loss", self.val_loss, prog_bar=True)
         self.log("val_step_acc", self.val_accuracy, prog_bar=True)
         return loss
 
     def on_validation_epoch_end(self):
-        self.log("val_loss", self.val_loss, logger=True)
-        self.log("val_acc", self.val_accuracy, logger=True)
+        # self.log("val_loss", self.val_loss, logger=True)
+        # self.log("val_acc", self.val_accuracy, logger=True)
         self.val_loss.reset()
         self.val_accuracy.reset()
 

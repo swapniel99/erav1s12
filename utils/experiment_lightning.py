@@ -12,9 +12,10 @@ from .backprop import Test
 
 
 class Experiment(object):
-    def __init__(self, dataset, dropout=0, max_epochs=20):
+    def __init__(self, model, dataset, max_epochs=20):
         self.dataset = dataset
-        self.model = Model(self.dataset, dropout)
+        self.model = model
+        model.dataset = dataset
         self.incorrect_preds = None
         self.grad_cam = None
         self.trainer = Trainer(max_epochs=max_epochs)
