@@ -5,7 +5,6 @@ from pytorch_grad_cam.utils.model_targets import ClassifierOutputTarget
 
 from pytorch_lightning import Trainer
 
-from datasets import CIFAR10
 from models.custom_resnet_lightning import Model
 
 from .misc import plot_examples
