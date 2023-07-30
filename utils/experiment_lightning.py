@@ -9,6 +9,12 @@ from .misc import plot_examples
 from .backprop import Test
 
 
+def get_incorrect_preds(prediction, labels):
+    prediction = prediction.argmax(dim=1)
+    indices = prediction.ne(labels).nonzero().reshape(-1).tolist()
+    return indices, prediction[indices].tolist(), labels[indices].tolist()
+
+
 class Experiment(object):
     def __init__(self, model, max_epochs=20, precision=32):
         self.model = model
@@ -26,9 +32,13 @@ class Experiment(object):
         self.trainer.fit(self.model)
 
     def get_incorrect_preds(self):
-        if self.incorrect_preds is None:
-            self.incorrect_preds = defaultdict(list)
-            self.test(self.incorrect_preds)
+        self.incorrect_preds = defaultdict(list)
+        results = self.trainer.predict()
+        for (data, target), pred in zip(self.model.predict_dataloader(), results):
+            ind, pred_, truth = get_incorrect_preds(pred, target)
+            self.incorrect_preds["images"] += data[ind]
+            self.incorrect_preds["ground_truths"] += truth
+            self.incorrect_preds["predicted_vals"] += pred_
 
     def get_cam_visualisation(self, input_tensor, label, target_layer):
         if self.grad_cam is None:
@@ -45,7 +55,8 @@ class Experiment(object):
         return output
 
     def show_incorrect(self, cams=False, target_layer=None):
-        self.get_incorrect_preds()
+        if self.incorrect_preds is None:
+            self.get_incorrect_preds()
 
         images = list()
         labels = list()
