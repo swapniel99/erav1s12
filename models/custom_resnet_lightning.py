@@ -53,7 +53,7 @@ class CustomLayer(nn.Module):
 
 
 class Model(LightningModule):
-    def __init__(self, dataset, dropout=0):
+    def __init__(self, dataset, dropout=0.05):
         super(Model, self).__init__()
 
         self.dataset = dataset
