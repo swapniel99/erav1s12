@@ -23,12 +23,10 @@ class CIFAR10(MyDataSet):
     mean = (0.49139968, 0.48215827, 0.44653124)
     std = (0.24703233, 0.24348505, 0.26158768)
     default_alb_transforms = [
-        A.HorizontalFlip(p=0.5),
+        A.ToGray(p=0.2),
         A.PadIfNeeded(40, 40, p=1),
         A.RandomCrop(32, 32, p=1),
-        # Padding value doesnt matter here.
-        A.PadIfNeeded(64, 64, border_mode=cv2.BORDER_CONSTANT, value=0, p=1),
+        A.HorizontalFlip(p=0.5),
         # Since normalisation was the first step, mean is already 0, so cutout fill_value = 0
-        A.CoarseDropout(max_holes=1, max_height=16, max_width=16, fill_value=0, p=1),
-        A.CenterCrop(32, 32, p=1)
+        A.CoarseDropout(max_holes=1, max_height=8, max_width=8, fill_value=0, p=1)
     ]

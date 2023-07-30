@@ -1,3 +1,4 @@
+import pandas as pd
 from collections import defaultdict
 from pytorch_grad_cam import GradCAM
 from pytorch_grad_cam.utils.image import show_cam_on_image
@@ -16,7 +17,7 @@ def get_incorrect_preds(prediction, labels):
 
 
 class Experiment(object):
-    def __init__(self, model, max_epochs=20, precision=32):
+    def __init__(self, model, max_epochs=24, precision=32):
         self.model = model
         self.dataset = model.dataset
         self.dataset.get_train_loader()
@@ -26,6 +27,7 @@ class Experiment(object):
         self.trainer = Trainer(max_epochs=max_epochs, precision=precision)
         self.test = Test(self.model, self.model.dataset, self.model.criterion)
         self.incorrect_preds = None
+        self.incorrect_preds_pd = None
         self.grad_cam = None
 
     def execute(self):
@@ -34,12 +36,15 @@ class Experiment(object):
     def get_incorrect_preds(self):
         self.incorrect_preds = defaultdict(list)
         results = self.trainer.predict()
+        processed = 0
         for (data, target), pred in zip(self.model.predict_dataloader(), results):
             ind, pred_, truth = get_incorrect_preds(pred, target)
-            self.incorrect_preds["indices"] += ind
+            self.incorrect_preds["indices"] += [x + processed for x in ind]
             self.incorrect_preds["images"] += data[ind]
             self.incorrect_preds["ground_truths"] += truth
             self.incorrect_preds["predicted_vals"] += pred_
+            processed += len(ind)
+        self.incorrect_preds_pd = pd.DataFrame(self.incorrect_preds).drop(columns='images')
 
     def get_cam_visualisation(self, input_tensor, label, target_layer):
         if self.grad_cam is None:

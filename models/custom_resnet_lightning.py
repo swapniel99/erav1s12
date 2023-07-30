@@ -9,7 +9,7 @@ from utils.metrics import RunningAccuracy
 
 
 class ConvLayer(nn.Module):
-    def __init__(self, input_c, output_c, bias=False, stride=1, padding=1, pool=False, dropout=0):
+    def __init__(self, input_c, output_c, bias=False, stride=1, padding=1, pool=False, dropout=0.):
         super(ConvLayer, self).__init__()
 
         layers = list()
@@ -31,7 +31,7 @@ class ConvLayer(nn.Module):
 
 
 class CustomLayer(nn.Module):
-    def __init__(self, input_c, output_c, pool=True, residue=2, dropout=0):
+    def __init__(self, input_c, output_c, pool=True, residue=2, dropout=0.):
         super(CustomLayer, self).__init__()
 
         self.pool_block = ConvLayer(input_c, output_c, pool=pool, dropout=dropout)
@@ -145,8 +145,8 @@ class Model(LightningModule):
             optimizer,
             max_lr=best_lr,
             steps_per_epoch=len(self.dataset.get_train_loader()),
-            epochs=20,
-            pct_start=0.25,
+            epochs=24,
+            pct_start=5/24,
             div_factor=100,
             three_phase=False,
             final_div_factor=100,
