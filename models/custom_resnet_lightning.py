@@ -139,7 +139,7 @@ class Model(LightningModule):
         return best_lr
 
     def configure_optimizers(self):
-        optimizer = optim.Adam(self.model.parameters(), lr=1e-7, weight_decay=1e-2)
+        optimizer = optim.Adam(self.parameters(), lr=1e-7, weight_decay=1e-2)
         best_lr = self.find_lr(optimizer)
         scheduler = optim.lr_scheduler.OneCycleLR(
             optimizer,
