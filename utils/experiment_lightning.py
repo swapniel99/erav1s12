@@ -13,8 +13,8 @@ from .backprop import Test
 
 
 class Experiment(object):
-    def __init__(self, batch_size=32, dropout=0, max_epochs=20):
-        self.dataset = CIFAR10(batch_size)
+    def __init__(self, dataset, dropout=0, max_epochs=20):
+        self.dataset = dataset
         self.model = Model(self.dataset, dropout)
         self.incorrect_preds = None
         self.grad_cam = None
