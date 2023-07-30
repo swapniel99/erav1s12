@@ -123,6 +123,10 @@ class Model(LightningModule):
         self.val_loss.reset()
         self.val_accuracy.reset()
 
+    def predict_step(self, batch, batch_idx, dataloader_idx=0):
+        print(batch)
+        return super().predict_step(batch, batch_idx, dataloader_idx)
+
     def find_lr(self, optimizer):
         lr_finder = LRFinder(self, optimizer, self.criterion)
         lr_finder.range_test(self.dataset.train_loader, start_lr=1e-5, end_lr=0.1, num_iter=100, step_mode='exp')

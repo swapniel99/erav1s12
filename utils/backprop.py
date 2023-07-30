@@ -93,7 +93,7 @@ class Test(object):
         self.test_accuracies = list()
 
     def __call__(self, incorrect_preds=None):
-        self.model.eval()
+        self.model.eval().cuda()
 
         test_loss = 0
         correct = 0
