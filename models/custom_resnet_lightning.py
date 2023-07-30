@@ -107,16 +107,22 @@ class Model(LightningModule):
         return loss
 
     def on_validation_epoch_end(self):
-        print(f"Epoch: {self.epoch}, Test Accuracy: {self.val_accuracy.compute()}, Test Loss: "
+        print(f"Epoch: {self.epoch}, Val Accuracy: {self.val_accuracy.compute()}, Val Loss: "
               f"{self.val_loss.compute()}")
         self.val_loss.reset()
         self.val_accuracy.reset()
 
     def test_step(self, batch, batch_idx):
-        return self.validation_step(batch, batch_idx)
+        loss = self.common_step(batch, self.val_loss, self.val_accuracy)
+        self.log("test_step_loss", self.val_loss, prog_bar=True, logger=True)
+        self.log("test_step_acc", self.val_accuracy, prog_bar=True, logger=True)
+        return loss
 
     def on_test_epoch_end(self):
-        self.on_validation_epoch_end()
+        print(f"Epoch: {self.epoch}, Test Accuracy: {self.val_accuracy.compute()}, Test Loss: "
+              f"{self.val_loss.compute()}")
+        self.val_loss.reset()
+        self.val_accuracy.reset()
 
     def find_lr(self, optimizer):
         lr_finder = LRFinder(self, optimizer, self.criterion)
