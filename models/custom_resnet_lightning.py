@@ -81,7 +81,7 @@ class Model(LightningModule):
         batch_len = y.numel()
         logits = self.forward(x)
         loss = self.criterion(logits, y)
-        loss_metric.update(loss * batch_len, batch_len)
+        loss_metric.update(loss, batch_len)
         acc_metric.update(logits, y)
         return loss
 
