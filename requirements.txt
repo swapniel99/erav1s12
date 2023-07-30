@@ -8,3 +8,5 @@ numpy
 opencv-python
 torch-lr-finder
 grad-cam
+pytorch-lightning
+torchmetrics

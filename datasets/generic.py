@@ -28,9 +28,9 @@ class MyDataSet(ABC):
         self.loader_kwargs = {'batch_size': batch_size, 'num_workers': os.cpu_count(), 'pin_memory': True}
         self.train_transforms = self.get_train_transforms()
         self.test_transforms = self.get_test_transforms()
-        self.train_loader = self.get_train_loader()
-        self.test_loader = self.get_test_loader()
-        self.example_iter = iter(self.train_loader)
+        self.train_loader = None
+        self.test_loader = None
+        self.example_iter = None
 
     def get_train_transforms(self):
         all_transforms = list()
@@ -47,6 +47,10 @@ class MyDataSet(ABC):
             all_transforms.append(A.Normalize(self.mean, self.std))
         all_transforms.append(ToTensorV2())
         return A.Compose(all_transforms)
+
+    def download(self):
+        self.DataSet('../data', train=True, download=True)
+        self.DataSet('../data', train=False, download=True)
 
     def get_train_loader(self):
         train_data = self.DataSet('../data', train=True, download=True, alb_transform=self.train_transforms)
@@ -76,6 +80,12 @@ class MyDataSet(ABC):
             return img.squeeze(0)
 
     def show_examples(self, figsize=(8, 6)):
+        if self.train_loader is None:
+            self.get_train_loader()
+
+        if self.example_iter is None:
+            self.example_iter = iter(self.train_loader)
+
         batch_data, batch_label = next(self.example_iter)
         images = list()
         labels = list()
