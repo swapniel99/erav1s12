@@ -125,8 +125,11 @@ class Model(LightningModule):
         self.val_accuracy.reset()
 
     def predict_step(self, batch, batch_idx, dataloader_idx=0):
-        print(batch)
-        return super().predict_step(batch, batch_idx, dataloader_idx)
+        if isinstance(batch, list):
+            x, _ = batch
+        else:
+            x = batch
+        return self.forward(x)
 
     def find_lr(self, optimizer):
         lr_finder = LRFinder(self, optimizer, self.criterion)
