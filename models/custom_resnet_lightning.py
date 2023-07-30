@@ -176,5 +176,5 @@ class Model(LightningModule):
         return self.val_dataloader()
 
     def summary(self):
-        return torchinfo.summary(self, input_size=(32, 3, 32, 32), depth=10,
+        return torchinfo.summary(self, input_size=(self.dataset.batch_size, 3, 32, 32), depth=10,
                                  col_names=["input_size", "output_size", "num_params", "params_percent"])
