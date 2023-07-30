@@ -92,8 +92,7 @@ class Model(LightningModule):
         return loss
 
     def on_train_epoch_end(self):
-        # self.log("train_loss", self.train_loss, logger=True)
-        # self.log("train_acc", self.train_accuracy, logger=True)
+        print(f"Train Accuracy: {self.train_accuracy.compute()}, Train Loss: {self.train_loss.compute()}")
         self.train_loss.reset()
         self.train_accuracy.reset()
 
@@ -104,8 +103,7 @@ class Model(LightningModule):
         return loss
 
     def on_validation_epoch_end(self):
-        # self.log("val_loss", self.val_loss, logger=True)
-        # self.log("val_acc", self.val_accuracy, logger=True)
+        print(f"Test Accuracy: {self.val_accuracy.compute()}, Test Loss: {self.val_loss.compute()}")
         self.val_loss.reset()
         self.val_accuracy.reset()
 
