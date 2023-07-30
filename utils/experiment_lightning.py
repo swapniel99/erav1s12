@@ -30,10 +30,9 @@ class Experiment(object):
             self.incorrect_preds = defaultdict(list)
             self.test(self.incorrect_preds)
 
-    def get_cam_visualisation(self, input_tensor, label):
+    def get_cam_visualisation(self, input_tensor, label, target_layer):
         if self.grad_cam is None:
-            self.grad_cam = GradCAM(model=self.model, target_layers=[self.model.layer3[-1]],
-                                    use_cuda=True)
+            self.grad_cam = GradCAM(model=self.model, target_layers=[target_layer], use_cuda=True)
 
         targets = [ClassifierOutputTarget(label)]
 

@@ -3,6 +3,7 @@ from torch import optim
 from pytorch_lightning import LightningModule
 from torchmetrics import MeanMetric
 from torch_lr_finder import LRFinder
+import torchinfo
 
 from utils.metrics import RunningAccuracy
 
@@ -167,3 +168,7 @@ class Model(LightningModule):
 
     def test_dataloader(self):
         return self.val_dataloader()
+
+    def summary(self):
+        torchinfo.summary(self, input_size=(32, 3, 32, 32), depth=10,
+                          col_names=["input_size", "output_size", "num_params", "params_percent"])
