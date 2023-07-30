@@ -73,6 +73,8 @@ class Model(LightningModule):
         self.train_loss = MeanMetric()
         self.val_loss = MeanMetric()
 
+        self.epoch = 1
+
     def forward(self, x):
         return self.network(x)
 
@@ -92,7 +94,8 @@ class Model(LightningModule):
         return loss
 
     def on_train_epoch_end(self):
-        print(f"Train Accuracy: {self.train_accuracy.compute()}, Train Loss: {self.train_loss.compute()}")
+        print(f"Epoch: {self.epoch}, Train Accuracy: {self.train_accuracy.compute()}, Train Loss: "
+              f"{self.train_loss.compute()}")
         self.train_loss.reset()
         self.train_accuracy.reset()
 
@@ -103,9 +106,11 @@ class Model(LightningModule):
         return loss
 
     def on_validation_epoch_end(self):
-        print(f"Test Accuracy: {self.val_accuracy.compute()}, Test Loss: {self.val_loss.compute()}")
+        print(f"Epoch: {self.epoch}, Test Accuracy: {self.val_accuracy.compute()}, Test Loss: "
+              f"{self.val_loss.compute()}")
         self.val_loss.reset()
         self.val_accuracy.reset()
+        self.epoch += 1
 
     def test_step(self, batch, batch_idx):
         return self.validation_step(batch, batch_idx)
