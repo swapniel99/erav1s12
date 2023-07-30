@@ -36,6 +36,7 @@ class Experiment(object):
         results = self.trainer.predict()
         for (data, target), pred in zip(self.model.predict_dataloader(), results):
             ind, pred_, truth = get_incorrect_preds(pred, target)
+            self.incorrect_preds["indices"] += ind
             self.incorrect_preds["images"] += data[ind]
             self.incorrect_preds["ground_truths"] += truth
             self.incorrect_preds["predicted_vals"] += pred_
