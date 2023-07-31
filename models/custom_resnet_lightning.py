@@ -53,7 +53,7 @@ class CustomLayer(nn.Module):
 
 
 class Model(LightningModule):
-    def __init__(self, dataset, dropout=0.05):
+    def __init__(self, dataset, dropout=0.05, epochs=24):
         super(Model, self).__init__()
 
         self.dataset = dataset
@@ -74,6 +74,7 @@ class Model(LightningModule):
         self.train_loss = MeanMetric()
         self.val_loss = MeanMetric()
 
+        self.epochs = epochs
         self.epoch_counter = 1
 
     def forward(self, x):
@@ -144,9 +145,9 @@ class Model(LightningModule):
         scheduler = optim.lr_scheduler.OneCycleLR(
             optimizer,
             max_lr=best_lr,
-            steps_per_epoch=len(self.dataset.get_train_loader()),
-            epochs=24,
-            pct_start=5/24,
+            steps_per_epoch=len(self.dataset.train_loader),
+            epochs=self.epochs,
+            pct_start=5/self.epochs,
             div_factor=100,
             three_phase=False,
             final_div_factor=100,
@@ -164,10 +165,10 @@ class Model(LightningModule):
         self.dataset.download()
 
     def train_dataloader(self):
-        return self.dataset.get_train_loader()
+        return self.dataset.train_loader
 
     def val_dataloader(self):
-        return self.dataset.get_test_loader()
+        return self.dataset.test_loader
 
     def test_dataloader(self):
         return self.val_dataloader()
