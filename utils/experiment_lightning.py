@@ -33,18 +33,16 @@ class Experiment(object):
 
     def get_incorrect_preds(self):
         self.incorrect_preds = defaultdict(list)
-        incorrect_images = list()
         processed = 0
         results = self.trainer.predict()
         for (data, target), pred in zip(self.model.predict_dataloader(), results):
             ind, pred_, truth = get_incorrect_preds(pred, target)
             self.incorrect_preds["indices"] += [x + processed for x in ind]
-            incorrect_images += data[ind]
+            self.incorrect_preds_pd["images"] += data[ind]
             self.incorrect_preds["ground_truths"] += truth
             self.incorrect_preds["predicted_vals"] += pred_
             processed += len(data)
-        self.incorrect_preds_pd = pd.DataFrame(self.incorrect_preds)
-        self.incorrect_preds_pd["images"] = incorrect_images
+        self.incorrect_preds_pd = pd.DataFrame(self.incorrect_preds).drop(columns='images')
 
     def get_cam_visualisation(self, input_tensor, label, target_layer):
         if self.grad_cam is None:
