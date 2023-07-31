@@ -97,7 +97,10 @@ class Model(LightningModule):
 
     def on_train_epoch_end(self):
         print(f"Epoch: {self.epoch_counter}, Train: Loss: {self.train_loss.compute():0.4f}, Accuracy: "
-              f"{self.train_accuracy.compute():0.2f}")
+              f"{self.train_accuracy.compute():0.2f}, Validation: Loss: {self.val_loss.compute():0.4f}, Accuracy: "
+              f"{self.val_accuracy.compute():0.2f}")
+        self.log("train_loss", self.train_loss, prog_bar=True, logger=True)
+        self.log("train_acc", self.train_accuracy, prog_bar=True, logger=True)
         self.train_loss.reset()
         self.train_accuracy.reset()
         self.epoch_counter += 1
@@ -109,19 +112,10 @@ class Model(LightningModule):
         return loss
 
     def on_validation_epoch_end(self):
-        print(f"Epoch: {self.epoch_counter}, Valid: Loss: {self.val_loss.compute():0.4f}, Accuracy: "
-              f"{self.val_accuracy.compute():0.2f}")
-        self.val_loss.reset()
-        self.val_accuracy.reset()
-
-    def test_step(self, batch, batch_idx):
-        loss = self.common_step(batch, self.val_loss, self.val_accuracy)
-        self.log("test_step_loss", self.val_loss, prog_bar=True, logger=True)
-        self.log("test_step_acc", self.val_accuracy, prog_bar=True, logger=True)
-        return loss
-
-    def on_test_epoch_end(self):
-        print(f"Test Accuracy: {self.val_accuracy.compute()}, Test Loss: {self.val_loss.compute()}")
+        # print(f"Epoch: {self.epoch_counter}, Valid: Loss: {self.val_loss.compute():0.4f}, Accuracy: "
+        #       f"{self.val_accuracy.compute():0.2f}")
+        self.log("val_loss", self.val_loss, prog_bar=True, logger=True)
+        self.log("val_acc", self.val_accuracy, prog_bar=True, logger=True)
         self.val_loss.reset()
         self.val_accuracy.reset()
 
@@ -169,9 +163,6 @@ class Model(LightningModule):
 
     def val_dataloader(self):
         return self.dataset.test_loader
-
-    def test_dataloader(self):
-        return self.val_dataloader()
 
     def predict_dataloader(self):
         return self.val_dataloader()
