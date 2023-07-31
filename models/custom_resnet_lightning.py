@@ -52,7 +52,7 @@ class CustomLayer(nn.Module):
 
 
 class Model(LightningModule):
-    def __init__(self, dataset, dropout=0.05, epochs=24):
+    def __init__(self, dataset, dropout=0.05, max_epochs=24):
         super(Model, self).__init__()
 
         self.dataset = dataset
@@ -73,7 +73,7 @@ class Model(LightningModule):
         self.train_loss = MeanMetric()
         self.val_loss = MeanMetric()
 
-        self.epochs = epochs
+        self.max_epochs = max_epochs
         self.epoch_counter = 1
 
     def forward(self, x):
@@ -131,8 +131,8 @@ class Model(LightningModule):
             optimizer,
             max_lr=best_lr,
             steps_per_epoch=len(self.dataset.train_loader),
-            epochs=self.epochs,
-            pct_start=5/self.epochs,
+            epochs=self.max_epochs,
+            pct_start=5/self.max_epochs,
             div_factor=100,
             three_phase=False,
             final_div_factor=100,

@@ -23,7 +23,7 @@ class Experiment(object):
         self.dataset = model.dataset
         self.incorrect_preds = None
         self.grad_cam = None
-        self.trainer = Trainer(callbacks=ModelSummary(max_depth=10), max_epochs=max_epochs or model.epochs,
+        self.trainer = Trainer(callbacks=ModelSummary(max_depth=10), max_epochs=max_epochs or model.max_epochs,
                                precision=precision)
         self.test = Test(self.model, self.model.dataset, self.model.criterion)
         self.incorrect_preds = None
