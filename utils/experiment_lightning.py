@@ -5,6 +5,7 @@ from pytorch_grad_cam.utils.image import show_cam_on_image
 from pytorch_grad_cam.utils.model_targets import ClassifierOutputTarget
 
 from pytorch_lightning import Trainer
+from pytorch_lightning.callbacks import ModelSummary
 
 from .misc import plot_examples
 from .backprop import Test
@@ -22,7 +23,8 @@ class Experiment(object):
         self.dataset = model.dataset
         self.incorrect_preds = None
         self.grad_cam = None
-        self.trainer = Trainer(max_epochs=max_epochs or model.epochs, precision=precision)
+        self.trainer = Trainer(callbacks=ModelSummary(max_depth=10), max_epochs=max_epochs or model.epochs,
+                               precision=precision)
         self.test = Test(self.model, self.model.dataset, self.model.criterion)
         self.incorrect_preds = None
         self.incorrect_preds_pd = None

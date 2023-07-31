@@ -3,7 +3,6 @@ from torch import optim
 from pytorch_lightning import LightningModule
 from torchmetrics import MeanMetric
 from torch_lr_finder import LRFinder
-import torchinfo
 
 from utils.metrics import RunningAccuracy
 
@@ -98,8 +97,6 @@ class Model(LightningModule):
     def on_train_epoch_end(self):
         print(f"Epoch: {self.epoch_counter}, Train: Loss: {self.train_loss.compute():0.4f}, Accuracy: "
               f"{self.train_accuracy.compute():0.2f}")
-        self.log("train_loss", self.train_loss, prog_bar=True, logger=True)
-        self.log("train_acc", self.train_accuracy, prog_bar=True, logger=True)
         self.train_loss.reset()
         self.train_accuracy.reset()
         self.epoch_counter += 1
@@ -113,8 +110,6 @@ class Model(LightningModule):
     def on_validation_epoch_end(self):
         print(f"Epoch: {self.epoch_counter}, Valid: Loss: {self.val_loss.compute():0.4f}, Accuracy: "
               f"{self.val_accuracy.compute():0.2f}")
-        self.log("val_loss", self.val_loss, prog_bar=True, logger=True)
-        self.log("val_acc", self.val_accuracy, prog_bar=True, logger=True)
         self.val_loss.reset()
         self.val_accuracy.reset()
 
@@ -165,7 +160,3 @@ class Model(LightningModule):
 
     def predict_dataloader(self):
         return self.val_dataloader()
-
-    def summary(self):
-        return torchinfo.summary(self, input_size=(self.dataset.batch_size, 3, 32, 32), depth=10,
-                                 col_names=["input_size", "output_size", "num_params", "params_percent"])
