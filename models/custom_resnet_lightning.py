@@ -89,10 +89,7 @@ class Model(LightningModule):
         return loss
 
     def training_step(self, batch, batch_idx):
-        loss = self.common_step(batch, self.train_loss, self.train_accuracy)
-        self.log("train_step_loss", self.train_loss, prog_bar=True, logger=True)
-        self.log("train_step_acc", self.train_accuracy, prog_bar=True, logger=True)
-        return loss
+        return self.common_step(batch, self.train_loss, self.train_accuracy)
 
     def on_train_epoch_end(self):
         print(f"Epoch: {self.epoch_counter}, Train: Loss: {self.train_loss.compute():0.4f}, Accuracy: "
