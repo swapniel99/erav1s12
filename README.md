@@ -1,4 +1,4 @@
-# epoch
+# ERA V1 Session 12
 
 This is a common modular library created in pytorch for ERAv1.
 
@@ -37,10 +37,8 @@ default_alb_transforms = [
 This module contains all the model definitions.
 
 ### 3. utils Module
-#### 3a. utils/backprop.py
-This module contains the Train and Test classes which are used in an experiment.
-Train and Test classes perform training and testing respectively on given model and dataset.
-They also accumulate statistics which can be plotted using a simple member functions.
+#### 3a. utils/metrics.py
+This module defines any custom metric classes we create. Currently it contains RunningAccuracy class which accumulates running accuracy for each epoch.
 
 #### 3b. utils/experiment.py
 This module contains the experiment class, which carries out training and testing.

@@ -28,13 +28,30 @@ class MyDataSet(ABC):
 
         self.loader_kwargs = {'batch_size': batch_size, 'num_workers': os.cpu_count(), 'pin_memory': True}
 
+    @classmethod
+    def set_classes(cls, data):
+        if cls.classes is None:
+            cls.classes = {i: c for i, c in enumerate(data.classes)}
+
+    @cached_property
+    def train_data(self):
+        res = self.DataSet('../data', train=True, download=True, alb_transform=self.get_train_transforms())
+        self.set_classes(res)
+        return res
+
+    @cached_property
+    def test_data(self):
+        res = self.DataSet('../data', train=False, download=True, alb_transform=self.get_test_transforms())
+        self.set_classes(res)
+        return res
+
     @cached_property
     def train_loader(self):
-        return self.get_train_loader()
+        return torch.utils.data.DataLoader(self.train_data, shuffle=self.shuffle, **self.loader_kwargs)
 
     @cached_property
     def test_loader(self):
-        return self.get_test_loader()
+        return torch.utils.data.DataLoader(self.test_data, shuffle=False, **self.loader_kwargs)
 
     @cached_property
     def example_iter(self):
@@ -59,16 +76,6 @@ class MyDataSet(ABC):
     def download(self):
         self.DataSet('../data', train=True, download=True)
         self.DataSet('../data', train=False, download=True)
-
-    def get_train_loader(self):
-        train_data = self.DataSet('../data', train=True, download=True, alb_transform=self.get_train_transforms())
-        if self.classes is None:
-            self.classes = {i: c for i, c in enumerate(train_data.classes)}
-        return torch.utils.data.DataLoader(train_data, shuffle=self.shuffle, **self.loader_kwargs)
-
-    def get_test_loader(self):
-        test_data = self.DataSet('../data', train=False, download=True, alb_transform=self.get_test_transforms())
-        return torch.utils.data.DataLoader(test_data, shuffle=False, **self.loader_kwargs)
 
     def denormalise(self, tensor):
         result = tensor.clone().detach().requires_grad_(False)
