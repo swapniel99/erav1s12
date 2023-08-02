@@ -12,3 +12,4 @@ pytorch-lightning
 torchmetrics
 pandas
 gradio
+Pillow
