@@ -8,7 +8,6 @@ from pytorch_lightning import Trainer
 from pytorch_lightning.callbacks import ModelSummary
 
 from .misc import plot_examples
-from .backprop import Test
 
 
 def get_incorrect_preds(prediction, labels):
@@ -25,7 +24,6 @@ class Experiment(object):
         self.grad_cam = None
         self.trainer = Trainer(callbacks=ModelSummary(max_depth=10), max_epochs=max_epochs or model.max_epochs,
                                precision=precision)
-        self.test = Test(self.model, self.model.dataset, self.model.criterion)
         self.incorrect_preds = None
         self.incorrect_preds_pd = None
         self.grad_cam = None
