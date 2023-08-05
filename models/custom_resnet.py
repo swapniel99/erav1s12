@@ -67,7 +67,7 @@ class Model(LightningModule):
 
         self.criterion = nn.CrossEntropyLoss()
         self.train_accuracy = Accuracy(task='multiclass', num_classes=10)
-        # self.val_accuracy = Accuracy(task='multiclass', num_classes=10)
+        self.val_accuracy = Accuracy(task='multiclass', num_classes=10)
 
         self.max_epochs = max_epochs
 
@@ -91,9 +91,9 @@ class Model(LightningModule):
         return loss
 
     def validation_step(self, batch, batch_idx):
-        loss = self.common_step(batch, 'train')
+        loss = self.common_step(batch, 'val')
         self.log("val_loss", loss, on_epoch=True, prog_bar=True, logger=True)
-        self.log("val_acc", self.train_accuracy, on_epoch=True, prog_bar=True, logger=True)
+        self.log("val_acc", self.val_accuracy, on_epoch=True, prog_bar=True, logger=True)
         return loss
 
     def predict_step(self, batch, batch_idx, dataloader_idx=0):
