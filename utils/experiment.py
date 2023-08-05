@@ -2,7 +2,7 @@ import pandas as pd
 from collections import defaultdict
 
 from pytorch_lightning import Trainer
-from pytorch_lightning.callbacks import ModelSummary
+from pytorch_lightning.callbacks import ModelSummary, LearningRateMonitor
 
 from .misc import plot_examples, get_cam_visualisation, get_incorrect_preds
 
@@ -13,8 +13,8 @@ class Experiment(object):
         self.dataset = model.dataset
         self.incorrect_preds = None
         self.grad_cam = None
-        self.trainer = Trainer(callbacks=ModelSummary(max_depth=10), max_epochs=max_epochs or model.max_epochs,
-                               precision=precision)
+        self.trainer = Trainer(callbacks=[ModelSummary(max_depth=10), LearningRateMonitor(logging_interval='step')],
+                               max_epochs=max_epochs or model.max_epochs, precision=precision)
         self.incorrect_preds = None
         self.incorrect_preds_pd = None
         self.grad_cam = None
