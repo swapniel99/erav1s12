@@ -2,7 +2,8 @@ from torch import nn
 from torch import optim
 from pytorch_lightning import LightningModule
 from torchmetrics import Accuracy
-from torch_lr_finder import LRFinder
+
+from utils.misc import find_lr
 
 
 class ConvLayer(nn.Module):
@@ -103,16 +104,9 @@ class Model(LightningModule):
             x = batch
         return self.forward(x)
 
-    def find_lr(self, optimizer):
-        lr_finder = LRFinder(self, optimizer, self.criterion)
-        lr_finder.range_test(self.dataset.train_loader, end_lr=0.1, num_iter=100, step_mode='exp')
-        _, best_lr = lr_finder.plot()
-        lr_finder.reset()
-        return best_lr
-
     def configure_optimizers(self):
         optimizer = optim.Adam(self.parameters(), lr=1e-7, weight_decay=1e-2)
-        best_lr = self.find_lr(optimizer)
+        best_lr = find_lr(self, self.train_dataloader(), optimizer, self.criterion)
         scheduler = optim.lr_scheduler.OneCycleLR(
             optimizer,
             max_lr=best_lr,

@@ -1,5 +1,6 @@
 import torch
 import torchinfo
+from torch_lr_finder import LRFinder
 from matplotlib import pyplot as plt
 from pytorch_grad_cam import GradCAM
 from pytorch_grad_cam.utils.image import show_cam_on_image
@@ -42,6 +43,14 @@ def plot_examples(images, labels, figsize=None, n=20):
         plt.title(str(label))
         plt.xticks([])
         plt.yticks([])
+
+
+def find_lr(model, data_loader, optimizer, criterion):
+    lr_finder = LRFinder(model, optimizer, criterion)
+    lr_finder.range_test(data_loader, end_lr=0.1, num_iter=100, step_mode='exp')
+    _, best_lr = lr_finder.plot()
+    lr_finder.reset()
+    return best_lr
 
 
 def get_incorrect_preds(prediction, labels):
