@@ -90,7 +90,7 @@ class Model(LightningModule):
         return loss
 
     def on_train_epoch_end(self):
-        print(f"Epoch: {self.epoch_counter}, Accuracy {self.train_accuracy.compute():0.2f}")
+        print(f"Train Accuracy {self.train_accuracy.compute():0.2f}")
         self.train_accuracy.reset()
 
     def validation_step(self, batch, batch_idx):
@@ -100,7 +100,7 @@ class Model(LightningModule):
         return loss
 
     def on_validation_epoch_end(self):
-        print(f"Epoch: {self.epoch_counter}, Accuracy: {self.val_accuracy.compute():0.2f}")
+        print(f"Val Accuracy: {self.val_accuracy.compute():0.2f}")
         self.val_accuracy.reset()
 
     def predict_step(self, batch, batch_idx, dataloader_idx=0):
