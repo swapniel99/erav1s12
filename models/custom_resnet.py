@@ -1,7 +1,7 @@
 from torch import nn
 from torch import optim
 from pytorch_lightning import LightningModule
-from torchmetrics import MeanMetric, Accuracy
+from torchmetrics import Accuracy
 from torch_lr_finder import LRFinder
 
 from utils.metrics import RunningAccuracy
@@ -70,23 +70,35 @@ class Model(LightningModule):
         self.criterion = nn.CrossEntropyLoss()
         self.train_accuracy = RunningAccuracy()
         self.val_accuracy = RunningAccuracy()
+        self.train_accuracy2 = Accuracy(task='multiclass', num_classes=10)
+        self.val_accuracy2 = Accuracy(task='multiclass', num_classes=10)
 
         self.max_epochs = max_epochs
 
     def forward(self, x):
         return self.network(x)
 
-    def common_step(self, batch, acc_metric):
+    def common_step(self, batch, mode):
         x, y = batch
         logits = self.forward(x)
         loss = self.criterion(logits, y)
+
+        if mode == 'train':
+            acc_metric = self.train_accuracy
+            acc_metric2 = self.train_accuracy2
+        else:
+            acc_metric = self.val_accuracy
+            acc_metric2 = self.val_accuracy2
         acc_metric.update(logits, y)
+        acc_metric2(logits, y)
+
         return loss
 
     def training_step(self, batch, batch_idx):
-        loss = self.common_step(batch, self.train_accuracy)
-        self.log("train_loss", loss, on_step=True, on_epoch=True, prog_bar=True, logger=True)
-        self.log("train_acc", self.train_accuracy, on_step=True, on_epoch=True, prog_bar=True, logger=True)
+        loss = self.common_step(batch, 'train')
+        self.log("train_loss", loss, on_epoch=True, prog_bar=True, logger=True)
+        self.log("train_acc", self.train_accuracy, on_epoch=True, prog_bar=True, logger=True)
+        self.log("train_acc2", self.train_accuracy2, on_epoch=True, prog_bar=True, logger=True)
         return loss
 
     def on_train_epoch_end(self):
@@ -94,9 +106,10 @@ class Model(LightningModule):
         self.train_accuracy.reset()
 
     def validation_step(self, batch, batch_idx):
-        loss = self.common_step(batch, self.val_accuracy)
-        self.log("val_loss", loss, on_step=True, on_epoch=True, prog_bar=True, logger=True)
-        self.log("val_acc", self.val_accuracy, on_step=True, on_epoch=True, prog_bar=True, logger=True)
+        loss = self.common_step(batch, 'val')
+        self.log("val_loss", loss, on_epoch=True, prog_bar=True, logger=True)
+        self.log("val_acc", self.val_accuracy, on_epoch=True, prog_bar=True, logger=True)
+        self.log("val_acc2", self.val_accuracy2, on_epoch=True, prog_bar=True, logger=True)
         return loss
 
     def on_validation_epoch_end(self):
