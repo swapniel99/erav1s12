@@ -4,8 +4,6 @@ from pytorch_lightning import LightningModule
 from torchmetrics import Accuracy
 from torch_lr_finder import LRFinder
 
-from utils.metrics import RunningAccuracy
-
 
 class ConvLayer(nn.Module):
     def __init__(self, input_c, output_c, bias=False, stride=1, padding=1, pool=False, dropout=0.):
@@ -68,10 +66,8 @@ class Model(LightningModule):
         )
 
         self.criterion = nn.CrossEntropyLoss()
-        self.train_accuracy = RunningAccuracy()
-        self.val_accuracy = RunningAccuracy()
-        self.train_accuracy2 = Accuracy(task='multiclass', num_classes=10)
-        self.val_accuracy2 = Accuracy(task='multiclass', num_classes=10)
+        self.train_accuracy = Accuracy(task='multiclass', num_classes=10)
+        # self.val_accuracy = Accuracy(task='multiclass', num_classes=10)
 
         self.max_epochs = max_epochs
 
@@ -83,14 +79,8 @@ class Model(LightningModule):
         logits = self.forward(x)
         loss = self.criterion(logits, y)
 
-        if mode == 'train':
-            acc_metric = self.train_accuracy
-            acc_metric2 = self.train_accuracy2
-        else:
-            acc_metric = self.val_accuracy
-            acc_metric2 = self.val_accuracy2
-        acc_metric.update(logits, y)
-        acc_metric2(logits, y)
+        acc_metric = getattr(self, f'{mode}_accuracy')
+        acc_metric(logits, y)
 
         return loss
 
@@ -98,23 +88,13 @@ class Model(LightningModule):
         loss = self.common_step(batch, 'train')
         self.log("train_loss", loss, on_epoch=True, prog_bar=True, logger=True)
         self.log("train_acc", self.train_accuracy, on_epoch=True, prog_bar=True, logger=True)
-        self.log("train_acc2", self.train_accuracy2, on_epoch=True, prog_bar=True, logger=True)
         return loss
-
-    def on_train_epoch_end(self):
-        print(f"Train Accuracy {self.train_accuracy.compute():0.2f}")
-        self.train_accuracy.reset()
 
     def validation_step(self, batch, batch_idx):
-        loss = self.common_step(batch, 'val')
+        loss = self.common_step(batch, 'train')
         self.log("val_loss", loss, on_epoch=True, prog_bar=True, logger=True)
-        self.log("val_acc", self.val_accuracy, on_epoch=True, prog_bar=True, logger=True)
-        self.log("val_acc2", self.val_accuracy2, on_epoch=True, prog_bar=True, logger=True)
+        self.log("val_acc", self.train_accuracy, on_epoch=True, prog_bar=True, logger=True)
         return loss
-
-    def on_validation_epoch_end(self):
-        print(f"Val Accuracy: {self.val_accuracy.compute():0.2f}")
-        self.val_accuracy.reset()
 
     def predict_step(self, batch, batch_idx, dataloader_idx=0):
         if isinstance(batch, list):
