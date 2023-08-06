@@ -146,11 +146,20 @@ We use ADAM Optimizer with One Cycle LR. Here we used LR Finder to get the steep
 
 ![LRFinder](assets/lr.png)
 
+LR Schedule:
+![Learning Rate](assets/lr_schedule.png)
+
+Training Loss:
+![Training Loss](assets/train_loss.png)
+
+Training Accuracy:
+![Training Accuracy](assets/train_acc.png)
+
 Validation Loss:
-![Validation Loss](assets/loss.png)
+![Validation Loss](assets/val_loss.png)
 
 Validation Accuracy:
-![Validation Accuracy](assets/acc.png)
+![Validation Accuracy](assets/val_acc.png)
 
 Misclassified Images:
 
