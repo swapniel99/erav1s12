@@ -51,10 +51,11 @@ class CustomLayer(nn.Module):
 
 
 class Model(LightningModule):
-    def __init__(self, dataset, dropout=0.05, max_epochs=24):
+    def __init__(self, dataset, batch_size=512, dropout=0.05, max_epochs=24):
         super(Model, self).__init__()
 
         self.dataset = dataset
+        self.batch_size = batch_size
 
         self.network = nn.Sequential(
             CustomLayer(3, 64, pool=False, residue=0, dropout=dropout),
@@ -130,10 +131,10 @@ class Model(LightningModule):
         self.dataset.download()
 
     def train_dataloader(self):
-        return self.dataset.train_loader
+        return self.dataset.get_train_loader(self.batch_size)
 
     def val_dataloader(self):
-        return self.dataset.test_loader
+        return self.dataset.get_test_loader(self.batch_size)
 
     def predict_dataloader(self):
         return self.val_dataloader()

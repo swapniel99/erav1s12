@@ -19,14 +19,14 @@ class MyDataSet(ABC):
     classes = None
     default_alb_transforms = None
 
-    def __init__(self, batch_size=1, normalize=True, shuffle=True, augment=True, alb_transforms=None):
+    def __init__(self, batch_size=32, normalize=True, shuffle=True, augment=True, alb_transforms=None):
         self.batch_size = batch_size
         self.normalize = normalize
         self.shuffle = shuffle
         self.augment = augment
         self.alb_transforms = alb_transforms or self.default_alb_transforms
 
-        self.loader_kwargs = {'batch_size': batch_size, 'num_workers': os.cpu_count(), 'pin_memory': True}
+        self.loader_kwargs = {'num_workers': os.cpu_count(), 'pin_memory': True}
 
     @classmethod
     def set_classes(cls, data):
@@ -47,11 +47,19 @@ class MyDataSet(ABC):
 
     @cached_property
     def train_loader(self):
-        return torch.utils.data.DataLoader(self.train_data, shuffle=self.shuffle, **self.loader_kwargs)
+        return self.get_train_loader()
 
     @cached_property
     def test_loader(self):
-        return torch.utils.data.DataLoader(self.test_data, shuffle=False, **self.loader_kwargs)
+        return self.get_test_loader()
+
+    def get_train_loader(self, batch_size=None):
+        return torch.utils.data.DataLoader(self.train_data, batch_size=batch_size or self.batch_size,
+                                           shuffle=self.shuffle, **self.loader_kwargs)
+
+    def get_test_loader(self, batch_size=None):
+        return torch.utils.data.DataLoader(self.test_data, batch_size=batch_size or self.batch_size, shuffle=False,
+                                           **self.loader_kwargs)
 
     @cached_property
     def example_iter(self):
