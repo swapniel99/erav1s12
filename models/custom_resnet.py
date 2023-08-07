@@ -84,19 +84,16 @@ class Model(LightningModule):
         acc_metric = getattr(self, f'{mode}_accuracy')
         acc_metric(logits, y)
 
+        self.log(f"{mode}_loss", loss, on_epoch=True, prog_bar=True, logger=True)
+        self.log(f"{mode}_acc", acc_metric, on_epoch=True, prog_bar=True, logger=True)
+
         return loss
 
     def training_step(self, batch, batch_idx):
-        loss = self.common_step(batch, 'train')
-        self.log("train_loss", loss, on_epoch=True, prog_bar=True, logger=True)
-        self.log("train_acc", self.train_accuracy, on_epoch=True, prog_bar=True, logger=True)
-        return loss
+        return self.common_step(batch, 'train')
 
     def validation_step(self, batch, batch_idx):
-        loss = self.common_step(batch, 'val')
-        self.log("val_loss", loss, on_epoch=True, prog_bar=True, logger=True)
-        self.log("val_acc", self.val_accuracy, on_epoch=True, prog_bar=True, logger=True)
-        return loss
+        return self.common_step(batch, 'val')
 
     def predict_step(self, batch, batch_idx, dataloader_idx=0):
         if isinstance(batch, list):
